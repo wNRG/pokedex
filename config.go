@@ -1,7 +1,15 @@
 package main
 
+import (
+	"github.com/wNRG/pokedex/internal/pokeapi"
+)
+
 type config struct {
 	commands map[string]cliCommand
+
+	pokeapiClient *pokeapi.Client
+	nextLocationAreaURL string
+	previousLocationAreaURL string
 } 
 
 func getCommands() map[string]cliCommand {
@@ -12,11 +20,24 @@ func getCommands() map[string]cliCommand {
 			callback: commandHelp,
 		},
 
+		"map": {
+			name: "map",
+			description: "Display names of 20 location areas in the Pokemon world",
+			callback: commandMapf,
+		},
+
+		"mapb": {
+			name: "mapb",
+			description: "Display the previous page of location areas",
+			callback: commandMapb,
+		},
+		
 		"exit": {
 			name: "exit",
 			description: "Exit the Pokedex",
 			callback: commandExit,
 		},
+
 	}
 }
 
