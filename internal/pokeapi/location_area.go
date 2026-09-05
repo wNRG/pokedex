@@ -1,15 +1,8 @@
 package pokeapi
 
-type LocationAreaResponse struct {
-	Count int `json:"count"`
-	Next *string `json:"next"`
-	Previous *string `json:"previous"`
-	Results []struct {
-		Name string `json:"name"`
-		URL string `json:"url"`
-	} `json:"results"`
-
-}
+import(
+	"encoding/json"
+)
 
 func (c *Client) GetLocationAreas(url string)(LocationAreaResponse, error) {
 	var data LocationAreaResponse
@@ -17,9 +10,27 @@ func (c *Client) GetLocationAreas(url string)(LocationAreaResponse, error) {
 	if url == "" {
 		url = baseURL + "/location-area/?limit=20"
 	}
+
+	// check if response stored in cache
+	if val, ok := c.cache.Get(url); ok {
+		if err := json.Unmarshal(val, &data); err != nil {
+			return LocationAreaResponse{}, err
+		} 
+
+		return data, nil
+	}
+
+	// make API request
 	if err := c.get(url, &data); err != nil {
 		return LocationAreaResponse{}, err
 	}
+
+	val ,err := json.Marshal(data)
+	if err != nil {
+		return LocationAreaResponse{}, err 
+	}
+
+	c.cache.Add(url, val)
 
 	return data, nil
 }
