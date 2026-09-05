@@ -5,7 +5,7 @@ import (
 	"github.com/wNRG/pokedex/internal/pokeapi"
 )
 
-func commandMapf(cfg *config) error {
+func commandMapf(cfg *config, args ...string) error {
 	data, err := cfg.pokeapiClient.GetLocationAreas(cfg.nextLocationAreaURL)
 	if err != nil {
 		return err
@@ -28,7 +28,7 @@ func commandMapf(cfg *config) error {
 	return nil
 } 
 
-func commandMapb(cfg *config) error {
+func commandMapb(cfg *config, args ...string) error {
 	if cfg.previousLocationAreaURL == "" {
 		fmt.Println("you're on the first page")
 		fmt.Println()

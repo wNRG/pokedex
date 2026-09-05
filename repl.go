@@ -20,14 +20,16 @@ func startRepl(cfg *config) {
 			continue
 		}
 
-		command, exists := cfg.commands[input[0]]
+		cmd_input := input[0]
+		cmd_args := input[1:]
 
+		command, exists := cfg.commands[cmd_input]
 		if !exists {
 			fmt.Println("Unknown command")
 			continue
 		}
 
-		if err := command.callback(cfg); err != nil {
+		if err := command.callback(cfg, cmd_args...); err != nil {
 			fmt.Println(err)
 		}
 	}
@@ -36,7 +38,7 @@ func startRepl(cfg *config) {
 type cliCommand struct {
 	name	string
 	description string
-	callback func(*config) error
+	callback func(*config, ...string) error
 }
 
 

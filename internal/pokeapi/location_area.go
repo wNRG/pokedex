@@ -25,7 +25,7 @@ func (c *Client) GetLocationAreas(url string)(LocationAreaResponse, error) {
 		return LocationAreaResponse{}, err
 	}
 
-	val ,err := json.Marshal(data)
+	val, err := json.Marshal(data)
 	if err != nil {
 		return LocationAreaResponse{}, err 
 	}

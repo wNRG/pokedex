@@ -35,7 +35,7 @@ func getCommands() map[string]cliCommand {
 		"explore": {
 			name: "explore <area_name>",
 			description: "Display all Pokemon located in the area",
-			callback: commandMapf,
+			callback: commandExplore,
 		},
 		
 		"exit": {
