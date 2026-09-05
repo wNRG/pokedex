@@ -4,15 +4,15 @@ import(
 	"encoding/json"
 )
 
-func (c *Client) GetPokemonInArea(name string) (ExploreAreaResponse, error) {
-	var data ExploreAreaResponse
+func (c *Client) GetPokemonInArea(name string) (LocationArea, error) {
+	var data LocationArea 
 
 	url := baseURL + "/location-area/" + name
 
 	// check if in cache
 	if val, ok := c.cache.Get(url); ok {
 		if err := json.Unmarshal(val, &data); err != nil {
-			return ExploreAreaResponse{}, err
+			return LocationArea{}, err
 		} 
 
 		return data, nil
@@ -20,12 +20,12 @@ func (c *Client) GetPokemonInArea(name string) (ExploreAreaResponse, error) {
 
 	// make API request
 	if err := c.get(url, &data); err != nil {
-		return ExploreAreaResponse{}, err
+		return LocationArea{}, err
 	}
 
 	val, err := json.Marshal(data)
 	if err != nil {
-		return ExploreAreaResponse{}, err
+		return LocationArea{}, err
 	}
 
 	c.cache.Add(url, val)

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/wNRG/pokedex/internal/pokeapi"
 )
 
 func commandMapf(cfg *config, args ...string) error {
@@ -11,58 +10,36 @@ func commandMapf(cfg *config, args ...string) error {
 		return err
 	}
 	
-	printLocationAreas(data)
-
-	if data.Next != nil {
-		cfg.nextLocationAreaURL = *data.Next
-	} else  {
-		cfg.nextLocationAreaURL = ""
+	for _, locationArea := range data.Results {
+		fmt.Println(locationArea.Name)
 	}
 
-	if data.Previous != nil {
-		cfg.previousLocationAreaURL = *data.Previous
-	} else {
-		cfg.previousLocationAreaURL = ""
-	}
+	cfg.nextLocationAreaURL = data.Next
+	cfg.previousLocationAreaURL = data.Previous
 
 	return nil
 } 
 
 func commandMapb(cfg *config, args ...string) error {
-	if cfg.previousLocationAreaURL == "" {
+	if cfg.previousLocationAreaURL == nil {
 		fmt.Println("you're on the first page")
 		fmt.Println()
 		return nil
 	}
 
-	data, err := cfg.pokeapiClient.GetLocationAreas(cfg.previousLocationAreaURL,)
+	data, err := cfg.pokeapiClient.GetLocationAreas(cfg.previousLocationAreaURL)
 	if err != nil {
 		return err
 	}
 
-	printLocationAreas(data)
-
-	if data.Next != nil {
-		cfg.nextLocationAreaURL = *data.Next
-	} else  {
-		cfg.nextLocationAreaURL = ""
-	}
-
-	if data.Previous != nil {
-		cfg.previousLocationAreaURL = *data.Previous
-	} else {
-		cfg.previousLocationAreaURL = ""
-	}
-
-	return nil
-}
-
-func printLocationAreas(data pokeapi.LocationAreaResponse) {
 	for _, locationArea := range data.Results {
 		fmt.Println(locationArea.Name)
 	}
+
 	fmt.Println()
+
+	cfg.nextLocationAreaURL = data.Next
+	cfg.previousLocationAreaURL = data.Previous
+
+	return nil
 }
-
-
-

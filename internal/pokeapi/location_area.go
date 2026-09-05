@@ -4,11 +4,12 @@ import(
 	"encoding/json"
 )
 
-func (c *Client) GetLocationAreas(url string)(LocationAreaResponse, error) {
+func (c *Client) GetLocationAreas(pageURL *string)(LocationAreaResponse, error) {
 	var data LocationAreaResponse
+	url := baseURL + "/location-area/?limit=20"
 
-	if url == "" {
-		url = baseURL + "/location-area/?limit=20"
+	if pageURL != nil {
+		url = *pageURL 
 	}
 
 	// check if response stored in cache
