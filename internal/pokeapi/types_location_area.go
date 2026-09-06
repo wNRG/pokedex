@@ -62,5 +62,5 @@ type LocationArea struct {
 			} `json:"version"`
 		} `json:"version_details"`
 	} `json:"pokemon_encounters"`
-	}
+}
 
