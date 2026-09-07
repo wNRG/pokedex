@@ -2,26 +2,51 @@ package main
 
 import (
 	"strings"
-	"os"
-	"bufio"
+	"io"
 	"fmt"
+	
+	"github.com/chzyer/readline"
 )
 
 func startRepl(cfg *config) {
-	scanner := bufio.NewScanner(os.Stdin)
+	rl, err := readline.NewEx(&readline.Config{
+		Prompt: "Pokedex > ",
+		HistoryLimit: 100,
+		InterruptPrompt: "^C",
+		EOFPrompt: "exit",
+	})
+
+	if err != nil {
+		fmt.Println("Error readline not working:", err)
+		return
+	}
+	defer rl.Close()
 
 	for {
-		fmt.Print("Pokedex > ")
-		scanner.Scan() 
+		input, err := rl.Readline()
+		if err == readline.ErrInterrupt {
+			if len(input) == 0 {
+				return
+			}
+			continue
+		}
+		if err == io.EOF {
+			return
+		}
 
-		input := cleanInput(scanner.Text())
+		if err != nil {
+			fmt.Println("Error reading input:", err)
+			return
+		}
 
-		if len(input) == 0 {
+		cleanedInput := cleanInput(input)
+
+		if len(cleanedInput) == 0 {
 			continue
 		}
 
-		cmd_input := input[0]
-		cmd_args := input[1:]
+		cmd_input := cleanedInput[0]
+		cmd_args := cleanedInput[1:]
 
 		command, exists := cfg.commands[cmd_input]
 		if !exists {
@@ -33,6 +58,7 @@ func startRepl(cfg *config) {
 			fmt.Println(err)
 		}
 	}
+
 }
 
 type cliCommand struct {
